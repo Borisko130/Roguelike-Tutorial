@@ -1,6 +1,10 @@
 import tcod as libtcod
 
 ### !!! How draw and clear functions work properly if they use same coordinates
+### EXPLANATION
+### 1. draw function puts symbol
+### 2. console_flush() draws symbol on the screen
+### 3. clear function clears all symbols, but only on next call of console_flush
 
 def render_all(con, entities, game_map, screen_width, screen_height, colors):
     # Draw all the tiles in the game map

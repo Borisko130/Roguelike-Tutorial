@@ -1,12 +1,21 @@
 from map_objects.tile import Tile
 
+"""
+Generates map
+"""
+
 class GameMap:
     def __init__(self, width, height):
+        # Initializes map
         self.width = width
         self.height = height
         self.tiles = self.initialize_tiles()
 
     def initialize_tiles(self):
+        # Initializes tiles on map
+
+        ### Here seems to be backwards order.
+        ### First x, then y, then tile's blocking property
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
 
         return tiles
@@ -20,6 +29,7 @@ class GameMap:
 
 
     def is_blocked(self, x, y,):
+    # Checks whether tile is blocked
         if self.tiles[x][y].blocked:
             return True
 
