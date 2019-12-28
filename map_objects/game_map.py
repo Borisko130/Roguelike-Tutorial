@@ -43,38 +43,38 @@ class GameMap:
                 if new_room.intersect(other_room):
                     break
 
+            else:
+                # This means there are no intersections, so this room is valid
+                # "paint" it to the map's tiles
+            
+                self.create_room(new_room)                
+                # Center coordinates of new room, will be useful later
+                (new_x, new_y) = new_room.center()
+
+                if num_rooms == 0:
+                    # This is the first room, where the player starts at
+                    player.x = new_x
+                    player.y = new_y
                 else:
-                    # This means there are no intersections, so this room is valid
-                    # "paint" it to the map's tiles
-                    self.create_room(new_room)
+                    # All rooms after the first:
+                    # Connect it to the previous room with a tunnel
 
-                    # Center coordinates of new room, will be useful later
-                    (new_x, new_y) = new_room.center()
+                    # Center coordinates of previous room
+                    (prev_x, prev_y) = rooms[num_rooms - 1].center()
 
-                    if num_rooms == 0:
-                        # This is the first room, where the player starts at
-                        player.x = new_x
-                        player.y = new_y
+                    # Random number 0 or 1
+                    if randint(0, 1) == 1:
+                        # First move horizontally, then vertically
+                        self.create_h_tunnel(prev_x, new_x, prev_y)
+                        self.create_v_tunnel(prev_y, new_y, new_x) 
                     else:
-                        # All rooms after the first:
-                        # Connect it to the previous room with a tunnel
+                        #First move vertivally then horizontally:
+                        self.create_v_tunnel(prev_y, new_y, prev_x)
+                        self.create_h_tunnel(prev_x, new_x, new_y)
 
-                        # Center coordinates of previous room
-                        (prev_x, prev_y) = rooms[num_rooms - 1].center()
-
-                        # Random number 0 or 1
-                        if randint(0, 1) == 1:
-                            # First move horizontally, then vertically
-                            self.create_h_tunnel(prev_x, new_x, prev_y)
-                            self.create_v_tunnel(prev_y, new_y, new_x)
-                        else:
-                            #First move vertivally then horizontally:
-                            self.create_v_tunnel(prev_y, new_y, prev_x)
-                            self.create_h_tunnel(prev_x, new_x, new_y)
-
-                    # Append the new room to the list
-                    rooms.append(new_room)
-                    num_rooms += 1
+                # Append the new room to the list
+                rooms.append(new_room)
+                num_rooms += 1
 
     def create_room(self, room):
         # Go through the tiles in the rectangle and make them passable
