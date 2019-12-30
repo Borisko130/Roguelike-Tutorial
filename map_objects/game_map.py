@@ -1,4 +1,4 @@
-from tcod as libtcod
+import tcod as libtcod
 from random import randint
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
@@ -24,7 +24,7 @@ class GameMap:
 
         return tiles
    
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player):
+    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room):
         
         rooms = []
         num_rooms = 0
@@ -73,6 +73,8 @@ class GameMap:
                         #First move vertivally then horizontally:
                         self.create_v_tunnel(prev_y, new_y, prev_x)
                         self.create_h_tunnel(prev_x, new_x, new_y)
+                
+                self.place_entities(new_room, entities, max_monsters_per_room)
 
                 # Append the new room to the list
                 rooms.append(new_room)
