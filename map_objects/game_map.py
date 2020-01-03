@@ -113,7 +113,7 @@ class GameMap:
                 if randint(0, 100) < 80:
                     monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc', blocks=True)
                 else:
-                    monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blcoks=True)
+                    monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True)
 
                 entities.append(monster)
 
