@@ -7,6 +7,7 @@ from render_functions import clear_all, render_all
 from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
+from death_functions import kill_monster, kill_player
 
 def main():
     screen_width = 80
@@ -60,7 +61,7 @@ def main():
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
-        render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
+        render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
         
         fov_recompute = False
 
@@ -103,13 +104,16 @@ def main():
 
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
-            dead_entity = player_turn_results.get('dead')
+            dead_entity = player_turn_result.get('dead')
 
             if message:
                 print(message)
 
             if dead_entity:
-                pass #
+                if dead_entity == player:
+                    message, game_state = kill_player(dead_entity)
+                else:
+                    message = kill_monster(dead_entity)
         
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
@@ -124,7 +128,18 @@ def main():
                             print(message)
 
                         if dead_entity:
-                            pass
+                            if dead_entity == player:
+                                message, game_state = kill_player(dead_entity)
+                            else:
+                                message = kill_monster(dead_entity)
+
+                            print(message)
+
+                            if game_state == GameStates.PLAYER_DEAD:
+                                break
+
+                    if game_state == GameStates.PLAYER_DEAD:
+                        break
 
             else:
                  game_state = GameStates.PLAYERS_TURN

@@ -6,7 +6,7 @@ import tcod as libtcod
 ### 2. console_flush() draws symbol on the screen
 ### 3. clear function clears all symbols, but only on next call of console_flush
 
-def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors):
+def render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors):
     # Draws fov_map on fov_recompute = True
     if fov_recompute:
         for y in range(game_map.height):
@@ -31,6 +31,9 @@ def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, sc
     # Draw all entities in the list
     for entity in entities:
         draw_entity(con, entity, fov_map)
+    
+    libtcod.console_set_default_foreground(con, libtcod.white)
+    libtcod.console_print_ex(con, 1, screen_height - 2,libtcod.BKGND_NONE, libtcod.LEFT, f"HP {player.fighter.hp}/{player.fighter.max_hp}")
 
     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
 
