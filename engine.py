@@ -3,7 +3,7 @@ import tcod as libtcod
 from components.fighter import Fighter
 from entity import Entity, get_blocking_entities_at_location
 from input_handlers import handle_keys
-from render_functions import clear_all, render_all 
+from render_functions import clear_all, render_all, RenderOrder 
 from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
@@ -34,7 +34,7 @@ def main():
     }
 
     fighter_component = Fighter(hp=30, defense=2, power=5)
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, fighter=fighter_component)
+    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component)
     entities = [player]
 
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
