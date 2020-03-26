@@ -1,6 +1,7 @@
 import tcod as libtcod
 
 from components.fighter import Fighter
+from components.inventory import Inventory
 from entity import Entity, get_blocking_entities_at_location
 from input_handlers import handle_keys
 from render_functions import clear_all, render_all, RenderOrder 
@@ -40,6 +41,7 @@ def main():
     fov_radius = 10
 
     max_monsters_per_room = 3
+    max_items_per_room = 2 
 
     # Colors of walls and ground outside field of view
     colors = {
@@ -51,20 +53,21 @@ def main():
 
     # Player entity parameters
     fighter_component = Fighter(hp=30, defense=2, power=5)
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component)
+    inventory_component = Inventory(26)
+    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component)
     entities = [player]
 
     #Console font settings
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 
-    libtcod.console_init_root(screen_width, screen_height, 'Stories of the Far Lands', False)
+    libtcod.console_init_root(screen_width, screen_height, 'My game', False)
 
     con = libtcod.console_new(screen_width, screen_height)  #Game screen
     panel = libtcod.console_new(screen_width, panel_height) #UI panel
 
     # Game map initialization and generation
     game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room)
+    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room)
 
     # Getting field of view info for the generated map
     fov_recompute = True
