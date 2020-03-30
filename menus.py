@@ -1,6 +1,6 @@
 import tcod as libtcod
 
-def menu(con, handler, options, width, screen_width, screen_height):
+def menu(con, header, options, width, screen_width, screen_height):
     if len(options) > 26: raise ValueError('Cannot have a menu with more than 26 options.')
 
     # calculate total height for the header (after auto-wrap) and one line per option
@@ -17,7 +17,7 @@ def menu(con, handler, options, width, screen_width, screen_height):
     # print all the options
     y = header_height
     letter_index = ord('a')
-    for optio_text in options:
+    for option_text in options:
         text = '(' + chr(letter_index) + ')' + option_text
         libtcod.console_print_ex(window, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, text)
         y += 1
@@ -26,7 +26,7 @@ def menu(con, handler, options, width, screen_width, screen_height):
     # blit the contents of "window" to the root console
     x = int(screen_width / 2 - width / 2)
     y = int(screen_height / 2 - height / 2)
-    libtcod.console_blit(window, 0, 0, widht, height, 0, x, y, 1.0, 0.7)
+    libtcod.console_blit(window, 0, 0, width, height, 0, x, y, 1.0, 0.7)
 
 def inventory_menu(con, header, inventory, inventory_width, screen_width, screen_height):
     # show a menu with each item of the inventory as an option

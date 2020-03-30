@@ -88,7 +88,7 @@ def main():
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, mouse, colors)
+        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, mouse, colors, game_state)
         
         fov_recompute = False
 
@@ -96,11 +96,12 @@ def main():
 
         clear_all(con, entities)
 
-        action = handle_keys(key)
+        action = handle_keys(key, game_state)
 
         move = action.get('move')
         pickup = action.get('pickup')
         show_inventory = action.get('show_inventory')
+        inventory_index = action.get('inventory_index')
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
 
@@ -139,7 +140,11 @@ def main():
                 
         if show_inventory:
             previous_game_state = game_state
-            game_state = GameState.SHOW_INVENTORY
+            game_state = GameStates.SHOW_INVENTORY
+
+        if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(player.inventory.items):
+            item = player.inventory.items[inventory_index]
+            player_turn_results.extend(player.inventory.use(item))
         
         if exit:
             if game_state == GameStates.SHOW_INVENTORY:
