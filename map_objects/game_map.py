@@ -7,10 +7,10 @@ from components.ai import  BasicMonster
 from components.fighter import Fighter
 from components.item import Item
 from render_functions import RenderOrder
-from import_funtions import heal
+from item_functions import heal
 
 """
-Generates map
+Generates map, places monsters and items
 """
 
 class GameMap:
@@ -111,7 +111,7 @@ class GameMap:
         number_of_items = randint(0, max_items_per_room)
 
         for i in range(number_of_monsters):
-            # Choose a random location in the room
+            # Choose a random location in the room to place monster
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
 
@@ -131,6 +131,7 @@ class GameMap:
                 entities.append(monster)
 
         for i in range(number_of_items):
+            # Choose a random location in the room to place item
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
 

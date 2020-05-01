@@ -36,7 +36,7 @@ class Inventory:
             kwargs = {**item_component.function_kwargs, **kwargs}
             item_use_results = item_component.use_function(self.owner, **kwargs)
 
-            for item_use_result it item_use_results:
+            for item_use_result in item_use_results:
                 if item_use_result.get('consumed'):
                     self.remove_item(item_entity)
 
@@ -46,3 +46,14 @@ class Inventory:
 
     def remove_item(self, item):
         self.items.remove(item)
+
+    def drop_item(self, item):
+        results = []
+
+        item.x = self.owner.x
+        item.y = self.owner.y
+
+        self.remove_item(item)
+        results.append({'item_dropped': item, 'message': Message('You dropped the {0}'.format(item.name), libtcod.yellow)})
+
+        return results
