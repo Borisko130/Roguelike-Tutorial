@@ -3,7 +3,7 @@ import tcod as libtcod
 from components.fighter import Fighter
 from components.inventory import Inventory
 from entity import Entity, get_blocking_entities_at_location
-from input_handlers import handle_keys
+from input_handlers import handle_keys, handle_mouse
 from render_functions import clear_all, render_all, RenderOrder 
 from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
@@ -80,6 +80,8 @@ def main():
 
     game_state = GameStates.PLAYERS_TURN
     previous_game_state = game_state
+
+    targeting_item = None
     
     # Main game loop
     while not libtcod.console_is_window_closed():
@@ -97,6 +99,7 @@ def main():
         clear_all(con, entities)
 
         action = handle_keys(key, game_state)
+        mouse_action = handle_mouse(mouse)
 
         move = action.get('move')
         pickup = action.get('pickup')
@@ -105,6 +108,9 @@ def main():
         inventory_index = action.get('inventory_index')
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
+
+        left_click = mouse_action.get('left_click')
+        right_click = mouse_action.get('right_click')
 
         # Log player's actions results
         player_turn_results = []
@@ -171,6 +177,7 @@ def main():
             item_added = player_turn_result.get('item_added')
             item_consumed = player_turn_result.get('consumed')
             item_dropped = player_turn_result.get('item_dropped')
+            targeting = player_tunr_result.get('targeting')
 
             if message:
                 message_log.add_message(message)
@@ -190,6 +197,14 @@ def main():
 
             if item_consumed:
                 game_state = GameStates.ENEMY_TURN
+
+            if targeting:
+                previous_game_state = GameStates.PLAYER_TURN
+                game_state = GameStates.TARGETING
+
+                targeting_item = targeting
+
+                message_log.add_message(targeting_item.item.targeting_message)
 
             if item_dropped:
                 entities.append(item_dropped)
