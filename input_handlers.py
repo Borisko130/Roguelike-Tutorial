@@ -57,7 +57,7 @@ def handle_player_turn_keys(key):
     return {}
 
 def handle_targeting_keys(key):
-    if key.vk = libtcod.KEY_ESCAPE:
+    if key.vk == libtcod.KEY_ESCAPE:
         return {'exit': True}
 
     return {}
