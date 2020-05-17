@@ -9,6 +9,7 @@ from entity import Entity
 from components.ai import  BasicMonster
 from components.fighter import Fighter
 from components.item import Item
+from components.stairs import Stairs
 
 from render_functions import RenderOrder
 
@@ -21,11 +22,13 @@ Generates map, places monsters and items
 """
 
 class GameMap:
-    def __init__(self, width, height):
+    def __init__(self, width, height, dungeon_level=1):
         # Initializes map
         self.width = width
         self.height = height
         self.tiles = self.initialize_tiles()
+
+        self.dungeon_level = dungeon_level
 
     def initialize_tiles(self):
         # Initializes tiles on map
@@ -40,6 +43,9 @@ class GameMap:
         
         rooms = []
         num_rooms = 0
+
+        center_of_last_room_x = None
+        center_of_last_room_y = None
 
         for r in range(max_rooms):
             # Random width and height
@@ -60,10 +66,13 @@ class GameMap:
             else:
                 # This means there are no intersections, so this room is valid
                 # "paint" it to the map's tiles
-            
-                self.create_room(new_room)                
+                self.create_room(new_room)
+                
                 # Center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
+
+                center_of_last_room_x = new_x
+                center_of_last_room_y = new_y
 
                 if num_rooms == 0:
                     # This is the first room, where the player starts at
@@ -91,6 +100,10 @@ class GameMap:
                 # Append the new room to the list
                 rooms.append(new_room)
                 num_rooms += 1
+
+        stairs_component = Stairs(self.dungeon_level + 1)
+        down_stairs = Entity(center_of_last_room_x, center_of_last_room_y, '>', libtcod.white, 'Stairs', render_order=RenderOrder.STAIRS, stairs=stairs_component)
+        entities.append(down_stairs)
 
     def create_room(self, room):
         # Go through the tiles in the rectangle and make them passable
@@ -169,3 +182,17 @@ class GameMap:
             return True
 
         return False
+
+
+    def next_floor(self, player, message_log, constants):
+        self.dungeon_level += 1
+        entities = [player]
+
+        self.tiles = self.initialize_tiles()
+        self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player, entities, constants['max_monsters_per_room'], constants['max_items_per_room'])
+
+        player.fighter.heal(player.fighter.max_hp // 2)
+
+        message_log.add_message(Message('You take a moment to rest, and recover your stength.', libtcod.light_violet))
+
+        return entities
