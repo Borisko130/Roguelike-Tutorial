@@ -2,7 +2,7 @@ import tcod as libtcod
 
 from enum import Enum
 from game_states import GameStates
-from menus import inventory_menu
+from menus import inventory_menu, level_up_menu, character_screen
 
 class RenderOrder(Enum):
     STAIRS = 1
@@ -84,6 +84,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     # Draw panel bar content
     render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp, libtcod.light_red, libtcod.darker_red)
 
+    # Shows dungeon level 
+    libtcod.console_print_ex(panel, 1, 3, libtcod.BKGND_NONE, libtcod.LEFT, 'Dungeon level: {0}'.format(game_map.dungeon_level))
+    
     # Display names of objects under mouse
     libtcod.console_set_default_foreground(panel, libtcod.light_gray)
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse(mouse, entities, fov_map))
@@ -99,6 +102,11 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
         
         inventory_menu(con, inventory_title, player.inventory, 50, screen_width, screen_height)
 
+    elif game_state == GameStates.LEVEL_UP:
+        level_up_menu(con, 'Level up! Choose a stat to raise:', player, 40, screen_width, screen_height)
+
+    elif game_state == GameStates.CHARACTER_SCEEN:
+        character_screen(player, 30, 10, screen_width, screen_height)
 
 def clear_all(con, entities):
     for entity in entities:
