@@ -201,7 +201,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             elif level_up == 'str':
                 player.fighter.power += 1
             elif level_up == 'def':
-                player.fighter.defence +=1
+                player.fighter.defense +=1
 
             game_state = previous_game_state
 
@@ -220,7 +220,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 player_turn_results.append({'targeting_cancelled': True})
 
         if exit:
-            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, GameStates.CHARACTER_SCEEN):
+            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, GameStates.CHARACTER_SCREEN):
                 game_state = previous_game_state
             elif game_state == GameStates.TARGETING:
                 player_turn_results.append({'targeting_cancelled': True})

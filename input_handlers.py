@@ -11,9 +11,9 @@ def handle_keys(key, game_state):
         return handle_targeting_keys(key)
     elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(key)
-    elif game_state == GameState.LEVEL_UP:
+    elif game_state == GameStates.LEVEL_UP:
         return handle_level_up_menu(key)
-    elif game_state == GameStates.CHARACTER_SCEEN:
+    elif game_state == GameStates.CHARACTER_SCREEN:
         return handle_character_screen(key)
 
     return {}
