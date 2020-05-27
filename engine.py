@@ -117,6 +117,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         action = handle_keys(key, game_state)
         mouse_action = handle_mouse(mouse)
 
+        #Player actions
         move = action.get('move')
         wait = action.get('wait')
         pickup = action.get('pickup')
@@ -194,14 +195,15 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             else:
                 message_log.add_message(Message('There are no stairs here.', libtcod.yellow))
 
+        # If player leveled up he should choose which stat should be increased
         if level_up:
             if level_up == 'hp':
-                player.fighter.max_hp += 20
+                player.fighter.base_max_hp += 20
                 player.fighter.hp += 20
             elif level_up == 'str':
-                player.fighter.power += 1
+                player.fighter.base_power += 1
             elif level_up == 'def':
-                player.fighter.defense +=1
+                player.fighter.base_defense +=1
 
             game_state = previous_game_state
 
@@ -238,6 +240,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             item_added = player_turn_result.get('item_added')
             item_consumed = player_turn_result.get('consumed')
             item_dropped = player_turn_result.get('item_dropped')
+            equip = player_turn_result.get('equip')
             targeting = player_turn_result.get('targeting')
             targeting_cancelled = player_turn_result.get('targeting_cancelled')
             xp = player_turn_result.get('xp')
@@ -266,6 +269,26 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
                 game_state = GameStates.ENEMY_TURN
 
+
+            
+            if equip:
+                # Passes item which should be equipped in equip_results
+                # and provides info on result
+                equip_results = player.equipment.toggle_equip(equip)
+
+                # Finds all messages on result of equipment of item and prints them on screen
+                for equip_result in equip_results:
+                    equipped = equip_result.get('equipped')
+                    dequipped = equip_result.get('dequipped')
+
+                    if equipped:
+                        message_log.add_message(Message('You equipped the {0}'.format(equipped.name)))
+
+                    if dequipped:
+                        message_log.add_message(Message('You dequipped the {0}'.format(dequipped.name)))
+
+                game_state = GameStates.ENEMY_TURN
+                
             if targeting:
                 previous_game_state = GameStates.PLAYERS_TURN
                 game_state = GameStates.TARGETING
